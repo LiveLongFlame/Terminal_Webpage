@@ -41,10 +41,9 @@ void printContactInfo(int rows, int cols){
 	string title = "Contact Details:";
 	string spacer = " ";
 	vector<string> contact_arr(4);
-	contact_arr[0] =  "  Email: valentinoosorioschwarz@gmail.com";
-	contact_arr[1] =  "  Phone Number: 0490854889";
-	contact_arr[2] = "  Linkedin: https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/";
-	contact_arr[3] = "  Github:  https://github.com/LiveLongFlame";
+	contact_arr[0] =  "  Email: valentinosorioschwarz@gmail.com";
+	contact_arr[1] = "  Linkedin: https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/";
+	contact_arr[2] = "  Github:  https://github.com/LiveLongFlame";
 	// Centering calculation
 	int start_row = (rows - 7) / 2;  // 7 lines tall
 	int start_col = ((cols - title.length()) / 2) -25;
@@ -140,8 +139,8 @@ int main(){
 	init_pair(1, COLOR_MAGENTA, -1); // About = Purple
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
-	//namePrint();	
-	//usleep(800000);
+	namePrint();	
+	usleep(800000);
 	// get user inputs from keyboard
 	Tab currentTab = ABOUT;	
     create_webpage(currentTab);
@@ -159,7 +158,7 @@ int main(){
 				break;
 			case KEY_DOWN:
 			case 'j':
-				if (currentTab == CONTACT && index < 3) {
+				if (currentTab == CONTACT && index < 2) {
 					index++;
 				}
 				break;
