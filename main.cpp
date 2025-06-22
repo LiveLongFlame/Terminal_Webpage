@@ -403,7 +403,6 @@ int main(){
 				
 			} 
 			break;
-		case 27: // ESC key
 		case 'b':
 			if (readme) {
 				readme = false;
