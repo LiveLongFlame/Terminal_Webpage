@@ -4,8 +4,49 @@
 #include <string>
 #include <unistd.h>
 #include <vector>
+#include <fstream>
+
 using namespace std;
 enum Tab { ABOUT, PROJECTS, CONTACT };
+
+struct Project {
+    string name;
+    string repo_url;
+    string readme_url;
+};
+
+
+vector<Project> projects = {
+    {
+        "Personal Projects",
+        "https://github.com/LiveLongFlame/Personal-Projects",
+        "https://raw.githubusercontent.com/LiveLongFlame/Personal-Projects/main/README.md"
+    },
+    {
+        "CS50 Final Project",
+        "https://github.com/LiveLongFlame/cs50_final_project",
+        "https://raw.githubusercontent.com/LiveLongFlame/cs50_final_project/main/README.md"
+    },
+    {
+        "Personal Website",
+        "https://github.com/LiveLongFlame/Personal-Website",
+        "https://raw.githubusercontent.com/LiveLongFlame/Personal-Website/main/README.md"
+    },
+    {
+        "Budget Tracker",
+        "https://github.com/LiveLongFlame/Budget-Tracker",
+        "https://raw.githubusercontent.com/LiveLongFlame/Budget-Tracker/main/README.md"
+    },
+    {
+        "Terminal Webpage",
+        "https://github.com/LiveLongFlame/Terminal_Webpage",
+        "https://raw.githubusercontent.com/LiveLongFlame/Terminal_Webpage/main/README.md"
+    }
+};
+
+string readme_text;
+bool readme = false;
+bool readmore = false;
 int index = 0;
 int jndex = 0;
 vector<vector<string>> lst = {
@@ -151,6 +192,18 @@ void printAboutInfo(int rows, int cols) {
 
 	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
 	mvprintw((rows / 2) + 12 , (cols - controls.length()) /2, "%s" , controls.c_str());
+
+}
+
+string fetch_readme(const string& url) {
+	const string temp_file = "/tmp/readme_tmp.md";
+	string command = "curl -s \"" + url + "\" -o " + temp_file;
+	system(command.c_str());
+
+	ifstream in(temp_file);
+	stringstream buffer;
+	buffer << in.rdbuf();
+	return buffer.str();
 }
 void printProjectInfo(int rows, int cols){
 	//todo: Print out project information
@@ -173,18 +226,46 @@ void printProjectInfo(int rows, int cols){
 	lst_projects[2] = "  -Buget Tracker";
 	lst_projects[3] = "  -Personal Website";
 	lst_projects[4] = "  -Terminal Webpage";
-		// Step 1: Print all items normally
+	//prints list 
 	for (size_t i = 0; i < lst_projects.size(); i++) {
 		mvprintw(start_row + 3 + (int)i * 2, start_col, "%s", lst_projects[i].c_str());
 	}
 
-	// Step 2: Print the selected item again with highlight
+	// Print the selected item again with highlight
 	if (index >= 0 && index < lst_projects.size()) {
 		attron(COLOR_PAIR(2) | A_REVERSE);
 		mvprintw(start_row + 3 + index * 2, start_col, "%s", lst_projects[index].c_str());
 		attroff(COLOR_PAIR(2) | A_REVERSE);
 	}
-	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
+	//todo: curl and get readme file. 
+	//once you get the read me file print out the contents of it. 
+	//move tabs up and the controls down to fit the informaton
+	//what happens if read me is too big? 
+	//limit how much of the read me is showen. there should be a counjtine button
+	//where is user selects the conutine button it will open the git hub repo page
+	if (readme) {
+    int readme_start_col = start_col + 40;
+    int readme_width = 60;
+    int readme_start_row = start_row + 1;
+    int max_lines = 10; // Limit how many lines to show
+
+    // Wrap and print a portion of the README
+    istringstream iss(readme_text);
+    string line;
+    int count = 0;
+    while (getline(iss, line) && count < max_lines) {
+        mvprintw(readme_start_row + count, readme_start_col, "%.*s", readme_width, line.c_str());
+        count++;
+    }
+
+    attron(COLOR_PAIR(2) | A_BOLD);
+    mvprintw(readme_start_row + count + 1, readme_start_col, "[Enter] Read More...");
+    attroff(COLOR_PAIR(2) | A_BOLD);
+}
+
+
+	
+	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate] [esc or b:back]";
 	mvprintw((rows / 2) + 10 , (cols - controls.length()) /2, "%s" , controls.c_str());
 
 }
@@ -300,6 +381,24 @@ int main(){
 			if (currentTab == CONTACT) {
 				if (index == 1) open_link("https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/");
 				else if (index == 2) open_link("https://github.com/LiveLongFlame");
+			} else if(currentTab == PROJECTS){
+				if (!readme) {
+					readme = true;
+					readmore = false;
+					readme_text = fetch_readme(projects[index].readme_url);
+				} else if (readme && !readmore) {
+					readmore = true;
+				} else if (readmore) {
+					open_link(projects[index].repo_url);
+				}		
+				
+			} 
+			break;
+		case 27: // ESC key
+		case 'b':
+			if (readme) {
+				readme = false;
+				readmore = false;
 			}
 			break;
 	}
