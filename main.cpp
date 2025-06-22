@@ -22,11 +22,12 @@ void create_webpage(){
     int title_row = rows / 2;
     int title_col = (cols - title.length()) / 2;
     // Animate the title
-    namePrint(title, title_row, title_col);
+    // namePrint(title, title_row, title_col);
     // Wait for key press to show next content
-    getch();
+	//usleep(800000);
     clear();
-    // Now draw "main webpage" content
+	//todo: Draw the webpage layout!!!!
+	mvprintw((rows / 2 ) -3, (cols - title.length()) /2 , title.c_str());	
     string tabs = "Tabs: [a: About Me]  [p: Projects]  [c: Contact]";
     mvprintw(rows / 2, (cols - tabs.length()) / 2, "%s", tabs.c_str());
     refresh();
