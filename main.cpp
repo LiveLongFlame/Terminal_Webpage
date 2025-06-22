@@ -1,21 +1,35 @@
 #include <iostream>
 #include <ncurses.h>
 #include <string>
+#include <unistd.h>
 using namespace std;
-void namePrint(){
-	//todo: Create an animation so that 'Valentino Webpage' gets printed out in the center letter by letter. Then the users presses anything on keybaord then show main webpage
+void namePrint(string& tittle , int row, int col, int delay = 100000){
+	//Creates animation for webpage 
+	for(size_t i =0; i < tittle.size();i++){
+		mvaddch(row, col + i, tittle[i]);
+		mvaddch(row +1, col + i, '-');
+        refresh();
+        usleep(delay);
+	}
+
 }
 void create_webpage(){
-	//TODO: Create format and basic layout of the Webpage 
 	clear();
-	//Getting dimenstions of terminal 
-	int y ,x;
-	getmaxyx(stdscr, y, x);
-	int center_y = y /2;
-	int center_x = x /2;
-	string tabs = "This is centered text test";
-	mvprintw(center_y, center_x - tabs.length() /2, tabs.c_str());
-	refresh();
+    // Get terminal size
+    int rows, cols;
+    getmaxyx(stdscr, rows, cols);
+    string title = "Valentino's Webpage";
+    int title_row = rows / 2;
+    int title_col = (cols - title.length()) / 2;
+    // Animate the title
+    namePrint(title, title_row, title_col);
+    // Wait for key press to show next content
+    getch();
+    clear();
+    // Now draw "main webpage" content
+    string tabs = "Tabs: [a: About Me]  [p: Projects]  [c: Contact]";
+    mvprintw(rows / 2, (cols - tabs.length()) / 2, "%s", tabs.c_str());
+    refresh();
 }
 int main(){
 	//This program uses ncurses to get user input from keyboard and navigate around CLI 
