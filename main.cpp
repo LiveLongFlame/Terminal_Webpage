@@ -1,3 +1,4 @@
+#include <sstream>
 #include <ncurses.h>
 #include <string>
 #include <unistd.h>
@@ -30,14 +31,7 @@ void open_link(const string& url) {
     }
 }
 void printContactInfo(int rows, int cols){
-	//todo: Print out contact information 
-	//if user hits j/k they can move up or down 
-	//what gets highelights background turns to orange
-	//tittl is orange
-	// https://linkedin.com/in/valentinoosorio
-	// https://github.com/LiveLongFlame
-	// idea: add a vector array of index. if user enter k or up arrow counter plus 1
-	// else counter -- for j and arrow down 
+	//prints contact informationm where users can navigate and contact me
 	string title = "Contact Details:";
 	string spacer = " ";
 	vector<string> contact_arr(4);
@@ -47,8 +41,7 @@ void printContactInfo(int rows, int cols){
 	// Centering calculation
 	int start_row = (rows - 7) / 2;  // 7 lines tall
 	int start_col = ((cols - title.length()) / 2) -25;
-	
-	// Draw box
+
 	attron(COLOR_PAIR(3));
 	mvprintw(start_row + 1, start_col, "%s", title.c_str());
 	attroff(COLOR_PAIR(3));
@@ -63,10 +56,50 @@ void printContactInfo(int rows, int cols){
 		}
 	}
 }
-void printAboutInfo(int rows, int cols){
-	//todo: Print out about ifnormatin structure like website 
-		string info = "THIS IS INFORMATION ABOUT ME!!!!!";
-		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+void printWrappedText(const string& text, int start_row, int max_width, int term_cols) {
+	istringstream iss(text);
+	string word, line;
+	vector<string> lines;
+
+	// Word-wrapping logic
+	while (iss >> word) {
+		if ((line + word).length() + 1 > (size_t)max_width) {
+			lines.push_back(line);
+			line = word + " ";
+		} else {
+			line += word + " ";
+		}
+	}
+	if (!line.empty()) {
+		lines.push_back(line);
+	}
+
+	// Print each line centered based on max_width
+	for (int i = 0; i < lines.size(); ++i) {
+		int line_col = (term_cols - max_width) / 2;
+		mvprintw(start_row + i, line_col, "%s", lines[i].c_str());
+	}
+}
+
+void printAboutInfo(int rows, int cols) {
+	string title = "About Me:";
+	int max_width = 80; 
+	int start_row = (rows - 7) / 2;  // 7 lines tall
+	int start_col = ((cols - title.length()) / 2) -35;
+
+
+	// Center the title
+	attron(COLOR_PAIR(1));
+	mvprintw(start_row +1, start_col, "%s", title.c_str());
+	attroff(COLOR_PAIR(1));
+
+	// Your paragraph text
+	string paragraph =
+		"My name is Valentino Osorio Schwarz, I'm currently a second-year Computer Science student at the Royal Melbourne Institute of Technology (RMIT) who loves to code and create new and innovative projects. "
+		"I've been coding for 5 years now, and want to document all my personal projects and achievements to demonstrate my skills as a software developer.";
+
+	// Print paragraph below title
+	printWrappedText(paragraph, start_row + 2, max_width, cols);
 }
 void printProjectInfo(int rows, int cols){
 	//todo: Print out project information
@@ -139,8 +172,8 @@ int main(){
 	init_pair(1, COLOR_MAGENTA, -1); // About = Purple
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
-	namePrint();	
-	usleep(800000);
+	//namePrint();	
+	//usleep(800000);
 	// get user inputs from keyboard
 	Tab currentTab = ABOUT;	
     create_webpage(currentTab);
@@ -164,9 +197,9 @@ int main(){
 				break;
 			case 10: // Enter key
 				if (currentTab == CONTACT) {
-					if (index == 2) {
+					if (index == 1) {
 						open_link("https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/");
-					} else if (index == 3) {
+					} else if (index == 2) {
 						open_link("https://github.com/LiveLongFlame");
 					}
 				}
