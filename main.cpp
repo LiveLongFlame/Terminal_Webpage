@@ -163,6 +163,16 @@ int main(){
 					index++;
 				}
 				break;
+			case 10: // Enter key
+				if (currentTab == CONTACT) {
+					if (index == 2) {
+						open_link("https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/");
+					} else if (index == 3) {
+						open_link("https://github.com/LiveLongFlame");
+					}
+				}
+				break;
+
 		}
 		create_webpage(currentTab);
 	}
