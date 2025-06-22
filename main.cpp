@@ -21,6 +21,12 @@ void namePrint() {
         usleep(delay);
     }
 }
+void open_link(const string& url) {
+    if (!url.empty()) {
+        string command = "xdg-open '" + url + "' >/dev/null 2>&1 &";
+        system(command.c_str());
+    }
+}
 void printContactInfo(int rows, int cols){
 	//todo: Print out contact information 
 	//if user hits j/k they can move up or down 
@@ -28,24 +34,21 @@ void printContactInfo(int rows, int cols){
 	//tittl is orange
 	// https://linkedin.com/in/valentinoosorio
 	// https://github.com/LiveLongFlame
-	string line1 = "--------------------------------------------------------";
-	string title = "|  Contact Details                                     |";
-	string line2 = "--------------------------------------------------------";
-	string email = "| Email: valentinoosorioschwarz@gmail.com              |";
-	string spacer = "|                                                     |";
-	string phone = "| Phone Number: 0490854889							   |";
-	string linkedin = "| Linkedin: https://linkedin.com/in/valentinoosorio |";
-	string github = "| Github:  https://github.com/LiveLongFlame		   |";
-	string line3 = "--------------------------------------------------------";
+	string title = "Contact Details:";
+	string email = "  Email: valentinoosorioschwarz@gmail.com";
+	string spacer = " ";
+	string phone = "  Phone Number: 0490854889";
+	string linkedin = "  Linkedin: https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/";
+	string github = "  Github:  https://github.com/LiveLongFlame";
 
 	// Centering calculation
 	int start_row = (rows - 7) / 2;  // 7 lines tall
-	int start_col = (cols - line1.length()) / 2;
+	int start_col = ((cols - title.length()) / 2) -25;
 
 	// Draw box
-	mvprintw(start_row,     start_col, "%s", line1.c_str());
+	attron(COLOR_PAIR(3));
 	mvprintw(start_row + 1, start_col, "%s", title.c_str());
-	mvprintw(start_row + 2, start_col, "%s", line2.c_str());
+	attroff(COLOR_PAIR(3));
 	mvprintw(start_row + 3, start_col, "%s", email.c_str());
 	mvprintw(start_row + 4, start_col, "%s", spacer.c_str());
 	mvprintw(start_row + 5, start_col, "%s", phone.c_str());
@@ -53,7 +56,6 @@ void printContactInfo(int rows, int cols){
 	mvprintw(start_row + 7, start_col, "%s", linkedin.c_str());
 	mvprintw(start_row + 8, start_col, "%s", spacer.c_str());
 	mvprintw(start_row + 9, start_col, "%s", github.c_str());
-	mvprintw(start_row + 10, start_col, "%s", line3.c_str());
 }
 void printAboutInfo(int rows, int cols){
 	//todo: Print out about ifnormatin structure like website 
@@ -132,8 +134,8 @@ int main(){
 	init_pair(1, COLOR_MAGENTA, -1); // About = Purple
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
-	namePrint();	
-	usleep(800000);
+	//namePrint();	
+	//usleep(800000);
 	// get user inputs from keyboard
 	Tab currentTab = ABOUT;	
     create_webpage(currentTab);
