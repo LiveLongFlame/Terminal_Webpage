@@ -6,6 +6,25 @@
 using namespace std;
 enum Tab { ABOUT, PROJECTS, CONTACT };
 int index = std::max(0, std::min(index, 3));
+int jndex = 0;
+vector<vector<string>> lst = {
+	{
+		"  - Track & Field (High Jump, Triple Jump, sprints)",
+		"  - Love Rubik's Cubes (5x5 is my favourite)",
+		"  - Coding!!!!!"
+	},
+	{
+		"  - Python, Java",
+		"  - C/C++",
+		"  - HTML, CSS, JavaScript, PHP, SQL"
+	},
+	{
+		"  - Completed VCE Year 12 [2023]",
+		"  - Completed Harvard's CS50 Course [2021-2023]",
+		"  - Bachelor of Computer Science [2023 - present]"
+	}
+};
+
 void namePrint() {
     clear();
     int row, col;
@@ -31,6 +50,8 @@ void open_link(const string& url) {
     }
 }
 void printContactInfo(int rows, int cols){
+	index =0;
+	jndex =0;
 	//prints contact informationm where users can navigate and contact me
 	string title = "Contact Details:";
 	string spacer = " ";
@@ -42,9 +63,10 @@ void printContactInfo(int rows, int cols){
 	int start_row = (rows - 7) / 2;  // 7 lines tall
 	int start_col = ((cols - title.length()) / 2) -25;
 
-	attron(COLOR_PAIR(3));
+	attron(COLOR_PAIR(3) | A_BOLD);
 	mvprintw(start_row + 1, start_col, "%s", title.c_str());
-	attroff(COLOR_PAIR(3));
+	attron(COLOR_PAIR(3) | A_BOLD);
+
 	// Print contact info with highlighting
 	for (int i = 0; i < contact_arr.size(); ++i) {
 		if (i == index) {
@@ -55,6 +77,9 @@ void printContactInfo(int rows, int cols){
 			mvprintw(start_row + 3 + (i * 2), start_col, "%s", contact_arr[i].c_str());
 		}
 	}
+	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
+	mvprintw((rows / 2) + 8, (cols - controls.length()) /2, "%s" , controls.c_str()); 
+
 }
 void printWrappedText(const string& text, int start_row, int max_width, int term_cols) {
 	istringstream iss(text);
@@ -82,24 +107,50 @@ void printWrappedText(const string& text, int start_row, int max_width, int term
 }
 
 void printAboutInfo(int rows, int cols) {
-	string title = "About Me:";
+		string title = "About Me:";
 	int max_width = 80; 
-	int start_row = (rows - 7) / 2;  // 7 lines tall
-	int start_col = ((cols - title.length()) / 2) -35;
+	int start_row = (rows - 7) / 2;
+	int start_col = ((cols - title.length()) / 2) - 36;
 
+	attron(COLOR_PAIR(1) | A_BOLD);
+	mvprintw(start_row + 1, start_col, "%s", title.c_str());
+	attroff(COLOR_PAIR(1) | A_BOLD);
 
-	// Center the title
-	attron(COLOR_PAIR(1));
-	mvprintw(start_row +1, start_col, "%s", title.c_str());
-	attroff(COLOR_PAIR(1));
-
-	// Your paragraph text
 	string paragraph =
 		"My name is Valentino Osorio Schwarz, I'm currently a second-year Computer Science student at the Royal Melbourne Institute of Technology (RMIT) who loves to code and create new and innovative projects. "
 		"I've been coding for 5 years now, and want to document all my personal projects and achievements to demonstrate my skills as a software developer.";
 
-	// Print paragraph below title
 	printWrappedText(paragraph, start_row + 2, max_width, cols);
+
+	vector<string> section_titles = {
+		"Hobbies:", "Programming Languages:", "Achievements:"
+	};
+
+	for (int sec = 0; sec < lst.size(); ++sec) {
+		if (index == sec) {
+			attron(COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);  // Highlight current section title
+			mvprintw((rows / 2) + 5 + (sec * 5), start_col, "%s", section_titles[sec].c_str());
+			attroff(COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+		} else {
+			attron(COLOR_PAIR(1));
+			mvprintw((rows / 2) + 5 + (sec * 5), start_col, "%s", section_titles[sec].c_str());
+			attroff(COLOR_PAIR(1));
+		}
+
+		for (int i = 0; i < lst[sec].size(); ++i) {
+			if (index == sec && jndex == i) {
+				attron(COLOR_PAIR(1) | A_REVERSE);
+			}
+			mvprintw((rows / 2) + 6 + (sec * 5) + i, start_col, "%s", lst[sec][i].c_str());
+			if (index == sec && jndex == i) {
+				attroff(COLOR_PAIR(1) | A_REVERSE);
+			}
+		}
+	}
+
+	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
+	mvprintw((rows / 2) + 22 , (cols - controls.length()) /2, "%s" , controls.c_str());
+
 }
 void printProjectInfo(int rows, int cols){
 	//todo: Print out project information
@@ -149,10 +200,6 @@ void create_webpage(Tab currentTab){
 	}
 
 
-	//Telling users controls and inputs
-	//q:quit , h/j/k/l or ← ↓ ↑ → Navigation
-	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
-	mvprintw((rows / 2) + 8, (cols - controls.length()) /2, "%s" , controls.c_str()); 
     refresh();
 }
 int main(){
@@ -172,43 +219,57 @@ int main(){
 	init_pair(1, COLOR_MAGENTA, -1); // About = Purple
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
-	//namePrint();	
-	//usleep(800000);
+//	namePrint();	
+//	usleep(800000);
 	// get user inputs from keyboard
 	Tab currentTab = ABOUT;	
     create_webpage(currentTab);
 	int ch; 
 	while ((ch = getch()) != 'q') {
-		switch (ch) {
-			case 'a': currentTab = ABOUT; break;
-			case 'p': currentTab = PROJECTS; break;
-			case 'c': currentTab = CONTACT; break;
-			case KEY_UP:
-			case 'k':
-				if (currentTab == CONTACT && index > 0 ) {
-					index--;
-				}
-				break;
-			case KEY_DOWN:
-			case 'j':
-				if (currentTab == CONTACT && index < 2) {
-					index++;
-				}
-				break;
-			case 10: // Enter key
-				if (currentTab == CONTACT) {
-					if (index == 1) {
-						open_link("https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/");
-					} else if (index == 2) {
-						open_link("https://github.com/LiveLongFlame");
-					}
-				}
-				break;
-
-		}
-		create_webpage(currentTab);
+	switch (ch) {
+		case 'a': currentTab = ABOUT; break;
+		case 'p': currentTab = PROJECTS; break;
+		case 'c': currentTab = CONTACT; break;
+		
+		case KEY_UP:
+		case 'k':
+			if (currentTab == CONTACT && index > 0) {
+				index--;
+			} else if (currentTab == ABOUT && index > 0) {
+				index--;
+				jndex = 0;
+			}
+			break;
+		case KEY_DOWN:
+		case 'j':
+			if (currentTab == CONTACT && index < 2) {
+				index++;
+			} else if (currentTab == ABOUT && index < 2) {
+				index++;
+				jndex = 0;
+			}
+			break;
+		case KEY_LEFT:
+		case 'h':
+			if (currentTab == ABOUT && jndex > 0) {
+				jndex--;
+			}
+			break;
+		case KEY_RIGHT:
+		case 'l':
+			if (currentTab == ABOUT && jndex < lst[index].size() - 1) {
+				jndex++;
+			}
+			break;
+		case 10: // Enter
+			if (currentTab == CONTACT) {
+				if (index == 1) open_link("https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/");
+				else if (index == 2) open_link("https://github.com/LiveLongFlame");
+			}
+			break;
 	}
-
+	create_webpage(currentTab);
+}
 	// Wait for user input before exiting
 	endwin();      
 	return 0;
