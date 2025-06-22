@@ -5,7 +5,7 @@
 #include <vector>
 using namespace std;
 enum Tab { ABOUT, PROJECTS, CONTACT };
-int index = std::max(0, std::min(index, 3));
+int index = 0;
 int jndex = 0;
 vector<vector<string>> lst = {
 	{
@@ -50,8 +50,6 @@ void open_link(const string& url) {
     }
 }
 void printContactInfo(int rows, int cols){
-	index =0;
-	jndex =0;
 	//prints contact informationm where users can navigate and contact me
 	string title = "Contact Details:";
 	string spacer = " ";
@@ -65,7 +63,7 @@ void printContactInfo(int rows, int cols){
 
 	attron(COLOR_PAIR(3) | A_BOLD);
 	mvprintw(start_row + 1, start_col, "%s", title.c_str());
-	attron(COLOR_PAIR(3) | A_BOLD);
+	attroff(COLOR_PAIR(3) | A_BOLD);
 
 	// Print contact info with highlighting
 	for (int i = 0; i < contact_arr.size(); ++i) {
@@ -223,8 +221,8 @@ int main(){
 	init_pair(1, COLOR_MAGENTA, -1); // About = Purple
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
-//	namePrint();	
-//	usleep(800000);
+	namePrint();	
+	usleep(800000);
 	// get user inputs from keyboard
 	Tab currentTab = ABOUT;	
     create_webpage(currentTab);
