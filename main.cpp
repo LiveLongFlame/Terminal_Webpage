@@ -107,9 +107,9 @@ void printWrappedText(const string& text, int start_row, int max_width, int term
 }
 
 void printAboutInfo(int rows, int cols) {
-		string title = "About Me:";
+	string title = "About Me:";
 	int max_width = 80; 
-	int start_row = (rows - 7) / 2;
+	int start_row = (rows - 7) / 2 - 10;
 	int start_col = ((cols - title.length()) / 2) - 36;
 
 	attron(COLOR_PAIR(1) | A_BOLD);
@@ -127,21 +127,23 @@ void printAboutInfo(int rows, int cols) {
 	};
 
 	for (int sec = 0; sec < lst.size(); ++sec) {
+		int section_title_row = (rows / 2) - 5 + (sec * 5);
 		if (index == sec) {
-			attron(COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);  // Highlight current section title
-			mvprintw((rows / 2) + 5 + (sec * 5), start_col, "%s", section_titles[sec].c_str());
+			attron(COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+			mvprintw(section_title_row, start_col, "%s", section_titles[sec].c_str());
 			attroff(COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
 		} else {
 			attron(COLOR_PAIR(1));
-			mvprintw((rows / 2) + 5 + (sec * 5), start_col, "%s", section_titles[sec].c_str());
+			mvprintw(section_title_row, start_col, "%s", section_titles[sec].c_str());
 			attroff(COLOR_PAIR(1));
 		}
 
 		for (int i = 0; i < lst[sec].size(); ++i) {
+			int item_row = (rows / 2) - 4 + (sec * 5) + i;
 			if (index == sec && jndex == i) {
 				attron(COLOR_PAIR(1) | A_REVERSE);
 			}
-			mvprintw((rows / 2) + 6 + (sec * 5) + i, start_col, "%s", lst[sec][i].c_str());
+			mvprintw(item_row, start_col, "%s", lst[sec][i].c_str());
 			if (index == sec && jndex == i) {
 				attroff(COLOR_PAIR(1) | A_REVERSE);
 			}
@@ -149,8 +151,7 @@ void printAboutInfo(int rows, int cols) {
 	}
 
 	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
-	mvprintw((rows / 2) + 22 , (cols - controls.length()) /2, "%s" , controls.c_str());
-
+	mvprintw((rows / 2) + 12 , (cols - controls.length()) /2, "%s" , controls.c_str());
 }
 void printProjectInfo(int rows, int cols){
 	//todo: Print out project information
@@ -173,6 +174,9 @@ void create_webpage(Tab currentTab){
 	string tab_projects = "[p: Projects]";
 	string tab_contact = "[c: Contact]";
 	int tabs_row = (rows / 2) - 5;
+	if (currentTab == ABOUT) {
+		tabs_row -= 10;
+	}
 
 	int col_start = (cols - (tab_about.length() + tab_projects.length() + tab_contact.length() + 4)) / 2;
 
