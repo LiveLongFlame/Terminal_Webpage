@@ -215,18 +215,11 @@ void printProjectInfo(int rows, int cols){
 		vector<string> lst_projects(5);
 		lst_projects[0] = "  -A* PathFinder";
 		lst_projects[1] = "  -cs50 Project";
-		lst_projects[2] = "  -Buget Tracker";
-		lst_projects[3] = "  -Personal Website";
+		lst_projects[2] = "  -Personal Website";
+		lst_projects[3] = "  -Buget Tracker";
 		lst_projects[4] = "  -Terminal Webpage";
 
-	//todo: curl and get readme file. 
-	//once you get the read me file print out the contents of it. 
-	//move tabs up and the controls down to fit the informaton
-	//what happens if read me is too big? 
-	//limit how much of the read me is showen. there should be a counjtine button
-	//where is user selects the conutine button it will open the git hub repo page
 	if (readme) {
-
 		//print the project and create a title
 		string tittle_projects = lst_projects[index] ;
 		int start_row = (rows - 7) / 2 - 8;
@@ -236,6 +229,7 @@ void printProjectInfo(int rows, int cols){
 		mvprintw(start_row + 1, start_col, "%s", tittle_projects.c_str());
 		attroff(COLOR_PAIR(2) | A_BOLD);
 
+		readme_text = fetch_readme(projects[index].readme_url);
 
 		int readme_start_col =  start_col + 5;
 		int readme_width = 70;
@@ -251,9 +245,9 @@ void printProjectInfo(int rows, int cols){
 			count++;
 		}
 
-		attron(COLOR_PAIR(2) | A_BOLD);
+		attron(COLOR_PAIR(2) | A_REVERSE);
 		mvprintw(readme_start_row + count + 1, readme_start_col, "[Enter] Read More...");
-		attroff(COLOR_PAIR(2) | A_BOLD);
+		attroff(COLOR_PAIR(2) | A_REVERSE);
 	} else {
 		string tittle_projects = "Projects:";
 		int start_row = (rows - 7) / 2;  // 7 lines tall
@@ -346,8 +340,8 @@ int main(){
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
 	//animation for name title
-	//namePrint();	
-	//usleep(800000);
+	namePrint();	
+	usleep(800000);
 	// get user inputs from keyboard
 	
     create_webpage(currentTab);
@@ -402,12 +396,10 @@ int main(){
 				if (!readme) {
 					readme = true;
 					readmore = false;
-					readme_text = fetch_readme(projects[index].readme_url);
 				} else if (readme && !readmore) {
 					readmore = true;
-				} else if (readmore) {
 					open_link(projects[index].repo_url);
-				}		
+				} 
 				
 			} 
 			break;
