@@ -8,3 +8,6 @@ Well I'm here to spice things up, by creating a terminal webpage where not only 
 ## Running the Program
 - run `ssh valentino.info` 
 
+## 🚨 NOTE
+
+🛠️ Still in development...
