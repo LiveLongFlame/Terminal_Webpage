@@ -31,19 +31,41 @@ void create_webpage(Tab currentTab){
     clear();
 	//todo: Draw the webpage layout!!!!
 	mvprintw((rows / 2 ) - 8, (cols - title.length()) /2 , title.c_str());	
-    string tabs = "[a: About Me]  [p: Projects]  [c: Contact]";
-    mvprintw((rows / 2) - 5, (cols - tabs.length()) / 2, "%s", tabs.c_str());
+    //string tabs = "[a: About Me]  [p: Projects]  [c: Contact]";
+    //mvprintw((rows / 2) - 5, (cols - tabs.length()) / 2, "%s", tabs.c_str());
 
+	// Tabs
+	std::string tab_about = "[a: About Me]";
+	std::string tab_projects = "[p: Projects]";
+	std::string tab_contact = "[c: Contact]";
+	int tabs_row = title_row - 5;
+
+	int col_start = (cols - (tab_about.length() + tab_projects.length() + tab_contact.length() + 4)) / 2;
+
+	// About Tab
+	if (currentTab == ABOUT) attron(COLOR_PAIR(1));
+	mvprintw(tabs_row, col_start, tab_about.c_str());
+	if (currentTab == ABOUT) attroff(COLOR_PAIR(1));
+
+	// Projects Tab
+	if (currentTab == PROJECTS) attron(COLOR_PAIR(2));
+	mvprintw(tabs_row, col_start + tab_about.length() + 2, tab_projects.c_str());
+	if (currentTab == PROJECTS) attroff(COLOR_PAIR(2));
+
+	// Contact Tab
+	if (currentTab == CONTACT) attron(COLOR_PAIR(3));
+	mvprintw(tabs_row, col_start + tab_about.length() + tab_projects.length() + 4, tab_contact.c_str());
+	if (currentTab == CONTACT) attroff(COLOR_PAIR(3));
 	//Selecting the different tabs and showing the different information 
 	if (currentTab == PROJECTS) {
 		string info = "MY PROJECTS!!!!!";
-		mvprintw((rows / 2), (cols - tabs.length()) / 2, "%s", info.c_str());
+		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
 	} else if(currentTab == CONTACT){
 		string info = "CONTACT ME!!!!!";
-		mvprintw((rows / 2), (cols - tabs.length()) / 2, "%s", info.c_str());
+		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
 	}else {
 		string info = "THIS IS INFORMATION ABOUT ME!!!!!";
-		mvprintw((rows / 2), (cols - tabs.length()) / 2, "%s", info.c_str());
+		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
 	}
     refresh();
 }
@@ -56,8 +78,14 @@ int main(){
 	cbreak();      
 	//hide cursor
 	curs_set(0);   
-	
-	//TODO: get user inputs from keyboard
+	//TODO: Adding colours to different tabs
+	start_color();
+	use_default_colors();
+	init_pair(1, COLOR_MAGENTA, -1); // About = Purple
+	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
+	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
+
+	// get user inputs from keyboard
 	Tab currentTab = ABOUT;	
     create_webpage(currentTab);
 	int ch; 
