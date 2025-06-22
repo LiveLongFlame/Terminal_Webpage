@@ -69,7 +69,7 @@ bool readme = false;
 bool readmore = false;
 int index = 0;
 int jndex = 0;
-
+int index_project =0;
 //This function prints my name in an animation style
 void namePrint() {
     clear();
@@ -240,7 +240,7 @@ void printProjectInfo(int rows, int cols){
 
 	if (readme) {
 		//print the project and create a title
-		string tittle_projects = lst_projects[index] ;
+		string tittle_projects = lst_projects[index_project] ;
 		int start_row = (rows - 7) / 2 - 8;
 		int start_col = ((cols - tittle_projects.length()) / 2) - 30;
 
@@ -248,7 +248,7 @@ void printProjectInfo(int rows, int cols){
 		mvprintw(start_row + 1, start_col, "%s", tittle_projects.c_str());
 		attroff(COLOR_PAIR(2) | A_BOLD);
 
-		readme_text = fetch_readme(projects[index].readme_url);
+		readme_text = fetch_readme(projects[index_project].readme_url);
 
 		int readme_start_col =  start_col + 5;
 		int readme_width = 70;
@@ -283,9 +283,9 @@ void printProjectInfo(int rows, int cols){
 		}
 
 		// Print the selected item again with highlight
-		if (index >= 0 && index < lst_projects.size()) {
+		if (index_project >= 0 && index_project < lst_projects.size()) {
 			attron(COLOR_PAIR(2) | A_REVERSE);
-			mvprintw(start_row + 3 + index * 2, start_col, "%s", lst_projects[index].c_str());
+			mvprintw(start_row + 3 + index_project * 2, start_col, "%s", lst_projects[index_project].c_str());
 			attroff(COLOR_PAIR(2) | A_REVERSE);
 		}
 
@@ -378,8 +378,8 @@ int main(){
 			} else if (currentTab == ABOUT && index > 0) {
 				index--;
 				jndex = 0;
-			} else if(currentTab == PROJECTS && index > 0){
-				index--;
+			} else if(currentTab == PROJECTS && index_project > 0){
+				index_project--;
 				jndex =0;
 			}
 			break;
@@ -389,9 +389,9 @@ int main(){
 				index++;
 			} else if (currentTab == ABOUT && index < 2) {
 				index++;
-				jndex = 0;
-			}else if(currentTab == PROJECTS && index < 4){
-				index++;
+				jndex = 0; 
+			}else if(currentTab == PROJECTS && index_project < 4){
+				index_project++;
 				jndex=0;
 			}
 			break;
@@ -417,7 +417,7 @@ int main(){
 					readmore = false;
 				} else if (readme && !readmore) {
 					readmore = true;
-					open_link(projects[index].repo_url);
+					open_link(projects[index_project].repo_url);
 				} 
 
 			} 
