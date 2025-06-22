@@ -26,9 +26,34 @@ void printContactInfo(int rows, int cols){
 	//if user hits j/k they can move up or down 
 	//what gets highelights background turns to orange
 	//tittl is orange
+	// https://linkedin.com/in/valentinoosorio
+	// https://github.com/LiveLongFlame
+	string line1 = "--------------------------------------------------------";
+	string title = "|  Contact Details                                     |";
+	string line2 = "--------------------------------------------------------";
+	string email = "| Email: valentinoosorioschwarz@gmail.com              |";
+	string spacer = "|                                                     |";
+	string phone = "| Phone Number: 0490854889							   |";
+	string linkedin = "| Linkedin: https://linkedin.com/in/valentinoosorio |";
+	string github = "| Github:  https://github.com/LiveLongFlame		   |";
+	string line3 = "--------------------------------------------------------";
 
-		string info = "CONTACT ME!!!!!";
-		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+	// Centering calculation
+	int start_row = (rows - 7) / 2;  // 7 lines tall
+	int start_col = (cols - line1.length()) / 2;
+
+	// Draw box
+	mvprintw(start_row,     start_col, "%s", line1.c_str());
+	mvprintw(start_row + 1, start_col, "%s", title.c_str());
+	mvprintw(start_row + 2, start_col, "%s", line2.c_str());
+	mvprintw(start_row + 3, start_col, "%s", email.c_str());
+	mvprintw(start_row + 4, start_col, "%s", spacer.c_str());
+	mvprintw(start_row + 5, start_col, "%s", phone.c_str());
+	mvprintw(start_row + 6, start_col, "%s", spacer.c_str());
+	mvprintw(start_row + 7, start_col, "%s", linkedin.c_str());
+	mvprintw(start_row + 8, start_col, "%s", spacer.c_str());
+	mvprintw(start_row + 9, start_col, "%s", github.c_str());
+	mvprintw(start_row + 10, start_col, "%s", line3.c_str());
 }
 void printAboutInfo(int rows, int cols){
 	//todo: Print out about ifnormatin structure like website 
