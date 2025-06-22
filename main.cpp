@@ -1,4 +1,3 @@
-#include <iostream>
 #include <ncurses.h>
 #include <string>
 #include <unistd.h>
@@ -22,7 +21,30 @@ void namePrint() {
         usleep(delay);
     }
 }
+void printContactInfo(int rows, int cols){
+	//todo: Print out contact information 
+	//if user hits j/k they can move up or down 
+	//what gets highelights background turns to orange
+	//tittl is orange
 
+		string info = "CONTACT ME!!!!!";
+		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+}
+void printAboutInfo(int rows, int cols){
+	//todo: Print out about ifnormatin structure like website 
+	// for 
+		string info = "THIS IS INFORMATION ABOUT ME!!!!!";
+		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+}
+void printProjectInfo(int rows, int cols){
+	//todo: Print out project information
+	//users can hgihlight project and if the enter on the project 
+	//then the readme file pops up to the side 
+	//a little buttion saying read more.. in blue 
+	//if user hits enter will ope
+		string info = "MY PROJECTS!!!!!";
+		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+}
 void create_webpage(Tab currentTab){
 	clear();
     // Get terminal size
@@ -54,14 +76,11 @@ void create_webpage(Tab currentTab){
 	if (currentTab == CONTACT) attroff(COLOR_PAIR(3));
 	//Selecting the different tabs and showing the different information 
 	if (currentTab == PROJECTS) {
-		string info = "MY PROJECTS!!!!!";
-		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+		printProjectInfo(rows, cols);
 	} else if(currentTab == CONTACT){
-		string info = "CONTACT ME!!!!!";
-		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+		printContactInfo(rows , cols);
 	}else {
-		string info = "THIS IS INFORMATION ABOUT ME!!!!!";
-		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+		printAboutInfo(rows , cols);
 	}
 
 
