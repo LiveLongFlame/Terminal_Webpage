@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <sstream>
 #include <ncurses.h>
 #include <string>
@@ -157,15 +158,41 @@ void printProjectInfo(int rows, int cols){
 	//then the readme file pops up to the side 
 	//a little buttion saying read more.. in blue 
 	//if user hits enter will ope
-		string info = "MY PROJECTS!!!!!";
-		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
+	string tittle_projects = "Projects:";
+	int start_row = (rows - 7) / 2;  // 7 lines tall
+	int start_col = ((cols - tittle_projects.length()) / 2) -25;
+
+	attron(COLOR_PAIR(2) | A_BOLD);
+	mvprintw(start_row + 1, start_col, "%s", tittle_projects.c_str());
+	attroff(COLOR_PAIR(2) | A_BOLD);
+
+
+	vector<string> lst_projects(5);
+	lst_projects[0] = "  -A* PathFinder";
+	lst_projects[1] = "  -cs50 Project";
+	lst_projects[2] = "  -Buget Tracker";
+	lst_projects[3] = "  -Personal Website";
+	lst_projects[4] = "  -Terminal Webpage";
+		// Step 1: Print all items normally
+	for (size_t i = 0; i < lst_projects.size(); i++) {
+		mvprintw(start_row + 3 + (int)i * 2, start_col, "%s", lst_projects[i].c_str());
+	}
+
+	// Step 2: Print the selected item again with highlight
+	if (index >= 0 && index < lst_projects.size()) {
+		attron(COLOR_PAIR(2) | A_REVERSE);
+		mvprintw(start_row + 3 + index * 2, start_col, "%s", lst_projects[index].c_str());
+		attroff(COLOR_PAIR(2) | A_REVERSE);
+	}
+	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
+	mvprintw((rows / 2) + 10 , (cols - controls.length()) /2, "%s" , controls.c_str());
+
 }
 void create_webpage(Tab currentTab){
 	clear();
     // Get terminal size
     int rows, cols;
     getmaxyx(stdscr, rows, cols);
-	//todo: Draw the webpage layout!!!!
 	
 	// Tabs
 	string tab_about = "[a: About Me]";
@@ -206,7 +233,6 @@ void create_webpage(Tab currentTab){
 }
 int main(){
 	//This program uses ncurses to get user input from keyboard and navigate around CLI 
-	//TODO: Add keyboard movements and layouts
 	/* initialize curses */
 	initscr();     
 	noecho();          
@@ -221,8 +247,9 @@ int main(){
 	init_pair(1, COLOR_MAGENTA, -1); // About = Purple
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
-	namePrint();	
-	usleep(800000);
+	//animation for name title
+	//namePrint();	
+	//usleep(800000);
 	// get user inputs from keyboard
 	Tab currentTab = ABOUT;	
     create_webpage(currentTab);
@@ -240,6 +267,9 @@ int main(){
 			} else if (currentTab == ABOUT && index > 0) {
 				index--;
 				jndex = 0;
+			} else if(currentTab == PROJECTS && index > 0){
+				index--;
+				jndex =0;
 			}
 			break;
 		case KEY_DOWN:
@@ -249,6 +279,9 @@ int main(){
 			} else if (currentTab == ABOUT && index < 2) {
 				index++;
 				jndex = 0;
+			}else if(currentTab == PROJECTS && index < 4){
+				index++;
+				jndex=0;
 			}
 			break;
 		case KEY_LEFT:
