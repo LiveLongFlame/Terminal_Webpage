@@ -5,10 +5,9 @@
 #include <unistd.h>
 #include <vector>
 #include <fstream>
-
 using namespace std;
 enum Tab { ABOUT, PROJECTS, CONTACT };
-
+//Create struct for projects and the project urls
 struct Project {
     string name;
     string repo_url;
@@ -43,12 +42,8 @@ vector<Project> projects = {
         "https://raw.githubusercontent.com/LiveLongFlame/Terminal_Webpage/main/README.md"
     }
 };
-Tab currentTab = ABOUT;	
-string readme_text;
-bool readme = false;
-bool readmore = false;
-int index = 0;
-int jndex = 0;
+
+
 vector<vector<string>> lst = {
 	{
 		"  - Track & Field (High Jump, Triple Jump, sprints)",
@@ -67,12 +62,22 @@ vector<vector<string>> lst = {
 	}
 };
 
+//GLOBAL VARIABLES
+Tab currentTab = ABOUT;	
+string readme_text;
+bool readme = false;
+bool readmore = false;
+int index = 0;
+int jndex = 0;
+
+//This function prints my name in an animation style
 void namePrint() {
     clear();
     int row, col;
+	//gets the corridantes of the size of the terminal
     getmaxyx(stdscr, row, col);
 
-    std::string tittle = "Valentino's Webpage";
+    string tittle = "Valentino's Webpage";
     int title_row = row / 2;
     int title_col = (col - tittle.length()) / 2;
     int delay = 100000; // 100ms
@@ -85,20 +90,25 @@ void namePrint() {
         usleep(delay);
     }
 }
+
+//Opens link to the systems default browser
 void open_link(const string& url) {
     if (!url.empty()) {
         string command = "xdg-open '" + url + "' >/dev/null 2>&1 &";
         system(command.c_str());
     }
 }
+
+//Main function for the conant page and prints out the contactinfomation
 void printContactInfo(int rows, int cols){
-	//prints contact informationm where users can navigate and contact me
+
 	string title = "Contact Details:";
 	string spacer = " ";
 	vector<string> contact_arr(4);
 	contact_arr[0] =  "  Email: valentinosorioschwarz@gmail.com";
 	contact_arr[1] = "  Linkedin: https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/";
 	contact_arr[2] = "  Github:  https://github.com/LiveLongFlame";
+	
 	// Centering calculation
 	int start_row = (rows - 7) / 2;  // 7 lines tall
 	int start_col = ((cols - title.length()) / 2) -25;
@@ -117,11 +127,16 @@ void printContactInfo(int rows, int cols){
 			mvprintw(start_row + 3 + (i * 2), start_col, "%s", contact_arr[i].c_str());
 		}
 	}
+
+
 	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate]";
 	mvprintw((rows / 2) + 8, (cols - controls.length()) /2, "%s" , controls.c_str()); 
 
 }
+
+//Looks at big text and make sure it wraps so that the text is formatted
 void printWrappedText(const string& text, int start_row, int max_width, int term_cols) {
+
 	istringstream iss(text);
 	string word, line;
 	vector<string> lines;
@@ -135,6 +150,7 @@ void printWrappedText(const string& text, int start_row, int max_width, int term
 			line += word + " ";
 		}
 	}
+
 	if (!line.empty()) {
 		lines.push_back(line);
 	}
@@ -146,7 +162,9 @@ void printWrappedText(const string& text, int start_row, int max_width, int term
 	}
 }
 
+//Main function for printing the about informaiton page
 void printAboutInfo(int rows, int cols) {
+	
 	string title = "About Me:";
 	int max_width = 80; 
 	int start_row = (rows - 7) / 2 - 10;
@@ -166,6 +184,8 @@ void printAboutInfo(int rows, int cols) {
 		"Hobbies:", "Programming Languages:", "Achievements:"
 	};
 
+	//Gets the information and prints it out. 
+	//Further shows the selection of eaach element
 	for (int sec = 0; sec < lst.size(); ++sec) {
 		int section_title_row = (rows / 2) - 5 + (sec * 5);
 		if (index == sec) {
@@ -178,6 +198,7 @@ void printAboutInfo(int rows, int cols) {
 			attroff(COLOR_PAIR(1));
 		}
 
+		//Show selection of each sub heading 
 		for (int i = 0; i < lst[sec].size(); ++i) {
 			int item_row = (rows / 2) - 4 + (sec * 5) + i;
 			if (index == sec && jndex == i) {
@@ -195,6 +216,7 @@ void printAboutInfo(int rows, int cols) {
 
 }
 
+//Fetchs the readme file and culs it to a temp file and prints it out
 string fetch_readme(const string& url) {
 	const string temp_file = "/tmp/readme_tmp.md";
 	string command = "curl -s \"" + url + "\" -o " + temp_file;
@@ -205,12 +227,9 @@ string fetch_readme(const string& url) {
 	buffer << in.rdbuf();
 	return buffer.str();
 }
+
+//Main function to print out different project information
 void printProjectInfo(int rows, int cols){
-	//todo: Print out project information
-	//users can hgihlight project and if the enter on the project 
-	//then the readme file pops up to the side 
-	//a little buttion saying read more.. in blue 
-	//if user hits enter will ope
 	
 		vector<string> lst_projects(5);
 		lst_projects[0] = "  -A* PathFinder";
@@ -249,6 +268,7 @@ void printProjectInfo(int rows, int cols){
 		mvprintw(readme_start_row + count + 1, readme_start_col, "[Enter] Read More...");
 		attroff(COLOR_PAIR(2) | A_REVERSE);
 	} else {
+
 		string tittle_projects = "Projects:";
 		int start_row = (rows - 7) / 2;  // 7 lines tall
 		int start_col = ((cols - tittle_projects.length()) / 2) -25;
@@ -271,14 +291,12 @@ void printProjectInfo(int rows, int cols){
 
 	}
 
-	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate] [esc or b:back]";
+	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate] [b:back]";
 	mvprintw((rows / 2) + 10 , (cols - controls.length()) /2, "%s" , controls.c_str());
 
 }
-void tabs_display(){
-
-}
 void create_webpage(Tab currentTab){
+
 	clear();
     // Get terminal size
     int rows, cols;
@@ -309,8 +327,11 @@ void create_webpage(Tab currentTab){
 
 	// Contact Tab
 	if (currentTab == CONTACT) attron(COLOR_PAIR(3));
+
 	mvprintw(tabs_row, col_start + tab_about.length() + tab_projects.length() + 4, tab_contact.c_str());
+
 	if (currentTab == CONTACT) attroff(COLOR_PAIR(3));
+	
 	//Selecting the different tabs and showing the different information 
 	if (currentTab == PROJECTS) {
 		printProjectInfo(rows, cols);
@@ -319,7 +340,6 @@ void create_webpage(Tab currentTab){
 	}else {
 		printAboutInfo(rows , cols);
 	}
-
 
     refresh();
 }
@@ -342,8 +362,8 @@ int main(){
 	//animation for name title
 	namePrint();	
 	usleep(800000);
-	// get user inputs from keyboard
 	
+	// get user inputs from keyboard
     create_webpage(currentTab);
 	int ch; 
 	while ((ch = getch()) != 'q') {
@@ -351,7 +371,6 @@ int main(){
 		case 'a': currentTab = ABOUT; break;
 		case 'p': currentTab = PROJECTS; break;
 		case 'c': currentTab = CONTACT; break;
-		
 		case KEY_UP:
 		case 'k':
 			if (currentTab == CONTACT && index > 0) {
@@ -400,7 +419,7 @@ int main(){
 					readmore = true;
 					open_link(projects[index].repo_url);
 				} 
-				
+
 			} 
 			break;
 		case 'b':
@@ -411,7 +430,7 @@ int main(){
 			break;
 	}
 	create_webpage(currentTab);
-}
+	}
 	// Wait for user input before exiting
 	endwin();      
 	return 0;
