@@ -43,7 +43,7 @@ vector<Project> projects = {
         "https://raw.githubusercontent.com/LiveLongFlame/Terminal_Webpage/main/README.md"
     }
 };
-
+Tab currentTab = ABOUT;	
 string readme_text;
 bool readme = false;
 bool readmore = false;
@@ -211,32 +211,14 @@ void printProjectInfo(int rows, int cols){
 	//then the readme file pops up to the side 
 	//a little buttion saying read more.. in blue 
 	//if user hits enter will ope
-	string tittle_projects = "Projects:";
-	int start_row = (rows - 7) / 2;  // 7 lines tall
-	int start_col = ((cols - tittle_projects.length()) / 2) -25;
+	
+		vector<string> lst_projects(5);
+		lst_projects[0] = "  -A* PathFinder";
+		lst_projects[1] = "  -cs50 Project";
+		lst_projects[2] = "  -Buget Tracker";
+		lst_projects[3] = "  -Personal Website";
+		lst_projects[4] = "  -Terminal Webpage";
 
-	attron(COLOR_PAIR(2) | A_BOLD);
-	mvprintw(start_row + 1, start_col, "%s", tittle_projects.c_str());
-	attroff(COLOR_PAIR(2) | A_BOLD);
-
-
-	vector<string> lst_projects(5);
-	lst_projects[0] = "  -A* PathFinder";
-	lst_projects[1] = "  -cs50 Project";
-	lst_projects[2] = "  -Buget Tracker";
-	lst_projects[3] = "  -Personal Website";
-	lst_projects[4] = "  -Terminal Webpage";
-	//prints list 
-	for (size_t i = 0; i < lst_projects.size(); i++) {
-		mvprintw(start_row + 3 + (int)i * 2, start_col, "%s", lst_projects[i].c_str());
-	}
-
-	// Print the selected item again with highlight
-	if (index >= 0 && index < lst_projects.size()) {
-		attron(COLOR_PAIR(2) | A_REVERSE);
-		mvprintw(start_row + 3 + index * 2, start_col, "%s", lst_projects[index].c_str());
-		attroff(COLOR_PAIR(2) | A_REVERSE);
-	}
 	//todo: curl and get readme file. 
 	//once you get the read me file print out the contents of it. 
 	//move tabs up and the controls down to fit the informaton
@@ -244,29 +226,62 @@ void printProjectInfo(int rows, int cols){
 	//limit how much of the read me is showen. there should be a counjtine button
 	//where is user selects the conutine button it will open the git hub repo page
 	if (readme) {
-    int readme_start_col = start_col + 40;
-    int readme_width = 60;
-    int readme_start_row = start_row + 1;
-    int max_lines = 10; // Limit how many lines to show
 
-    // Wrap and print a portion of the README
-    istringstream iss(readme_text);
-    string line;
-    int count = 0;
-    while (getline(iss, line) && count < max_lines) {
-        mvprintw(readme_start_row + count, readme_start_col, "%.*s", readme_width, line.c_str());
-        count++;
-    }
+		//print the project and create a title
+		string tittle_projects = lst_projects[index] ;
+		int start_row = (rows - 7) / 2 - 8;
+		int start_col = ((cols - tittle_projects.length()) / 2) - 30;
 
-    attron(COLOR_PAIR(2) | A_BOLD);
-    mvprintw(readme_start_row + count + 1, readme_start_col, "[Enter] Read More...");
-    attroff(COLOR_PAIR(2) | A_BOLD);
-}
+		attron(COLOR_PAIR(2) | A_BOLD);
+		mvprintw(start_row + 1, start_col, "%s", tittle_projects.c_str());
+		attroff(COLOR_PAIR(2) | A_BOLD);
 
 
-	
+		int readme_start_col =  start_col + 5;
+		int readme_width = 70;
+		int readme_start_row = start_row +3;
+		int max_lines = 15; // Limit how many lines to show
+
+		// Wrap and print a portion of the README
+		istringstream iss(readme_text);
+		string line;
+		int count = 0;
+		while (getline(iss, line) && count < max_lines) {
+			mvprintw(readme_start_row + count, readme_start_col, "%.*s", readme_width, line.c_str());
+			count++;
+		}
+
+		attron(COLOR_PAIR(2) | A_BOLD);
+		mvprintw(readme_start_row + count + 1, readme_start_col, "[Enter] Read More...");
+		attroff(COLOR_PAIR(2) | A_BOLD);
+	} else {
+		string tittle_projects = "Projects:";
+		int start_row = (rows - 7) / 2;  // 7 lines tall
+		int start_col = ((cols - tittle_projects.length()) / 2) -25;
+
+		attron(COLOR_PAIR(2) | A_BOLD);
+		mvprintw(start_row + 1, start_col, "%s", tittle_projects.c_str());
+		attroff(COLOR_PAIR(2) | A_BOLD);
+
+		//prints list 
+		for (size_t i = 0; i < lst_projects.size(); i++) {
+			mvprintw(start_row + 3 + (int)i * 2, start_col, "%s", lst_projects[i].c_str());
+		}
+
+		// Print the selected item again with highlight
+		if (index >= 0 && index < lst_projects.size()) {
+			attron(COLOR_PAIR(2) | A_REVERSE);
+			mvprintw(start_row + 3 + index * 2, start_col, "%s", lst_projects[index].c_str());
+			attroff(COLOR_PAIR(2) | A_REVERSE);
+		}
+
+	}
+
 	string controls = "[q:quit] [h/j/k/l or < v ^ >  navigate] [esc or b:back]";
 	mvprintw((rows / 2) + 10 , (cols - controls.length()) /2, "%s" , controls.c_str());
+
+}
+void tabs_display(){
 
 }
 void create_webpage(Tab currentTab){
@@ -282,6 +297,8 @@ void create_webpage(Tab currentTab){
 	int tabs_row = (rows / 2) - 5;
 	if (currentTab == ABOUT) {
 		tabs_row -= 10;
+	} else if(currentTab == PROJECTS && readme){
+		tabs_row -= 8;
 	}
 
 	int col_start = (cols - (tab_about.length() + tab_projects.length() + tab_contact.length() + 4)) / 2;
@@ -332,7 +349,7 @@ int main(){
 	//namePrint();	
 	//usleep(800000);
 	// get user inputs from keyboard
-	Tab currentTab = ABOUT;	
+	
     create_webpage(currentTab);
 	int ch; 
 	while ((ch = getch()) != 'q') {
