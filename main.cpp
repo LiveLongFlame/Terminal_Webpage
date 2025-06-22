@@ -1,8 +1,10 @@
 #include <ncurses.h>
 #include <string>
 #include <unistd.h>
+#include <vector>
 using namespace std;
 enum Tab { ABOUT, PROJECTS, CONTACT };
+int index = std::max(0, std::min(index, 3));
 void namePrint() {
     clear();
     int row, col;
@@ -34,32 +36,36 @@ void printContactInfo(int rows, int cols){
 	//tittl is orange
 	// https://linkedin.com/in/valentinoosorio
 	// https://github.com/LiveLongFlame
+	// idea: add a vector array of index. if user enter k or up arrow counter plus 1
+	// else counter -- for j and arrow down 
 	string title = "Contact Details:";
-	string email = "  Email: valentinoosorioschwarz@gmail.com";
 	string spacer = " ";
-	string phone = "  Phone Number: 0490854889";
-	string linkedin = "  Linkedin: https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/";
-	string github = "  Github:  https://github.com/LiveLongFlame";
-
+	vector<string> contact_arr(4);
+	contact_arr[0] =  "  Email: valentinoosorioschwarz@gmail.com";
+	contact_arr[1] =  "  Phone Number: 0490854889";
+	contact_arr[2] = "  Linkedin: https://www.linkedin.com/in/valentino-osorio-schwarz-b05842258/";
+	contact_arr[3] = "  Github:  https://github.com/LiveLongFlame";
 	// Centering calculation
 	int start_row = (rows - 7) / 2;  // 7 lines tall
 	int start_col = ((cols - title.length()) / 2) -25;
-
+	
 	// Draw box
 	attron(COLOR_PAIR(3));
 	mvprintw(start_row + 1, start_col, "%s", title.c_str());
 	attroff(COLOR_PAIR(3));
-	mvprintw(start_row + 3, start_col, "%s", email.c_str());
-	mvprintw(start_row + 4, start_col, "%s", spacer.c_str());
-	mvprintw(start_row + 5, start_col, "%s", phone.c_str());
-	mvprintw(start_row + 6, start_col, "%s", spacer.c_str());
-	mvprintw(start_row + 7, start_col, "%s", linkedin.c_str());
-	mvprintw(start_row + 8, start_col, "%s", spacer.c_str());
-	mvprintw(start_row + 9, start_col, "%s", github.c_str());
+	// Print contact info with highlighting
+	for (int i = 0; i < contact_arr.size(); ++i) {
+		if (i == index) {
+			attron(COLOR_PAIR(3) | A_REVERSE); // orange bg with reverse
+			mvprintw(start_row + 3 + (i * 2), start_col, "%s", contact_arr[i].c_str());
+			attroff(COLOR_PAIR(3) | A_REVERSE);
+		} else {
+			mvprintw(start_row + 3 + (i * 2), start_col, "%s", contact_arr[i].c_str());
+		}
+	}
 }
 void printAboutInfo(int rows, int cols){
 	//todo: Print out about ifnormatin structure like website 
-	// for 
 		string info = "THIS IS INFORMATION ABOUT ME!!!!!";
 		mvprintw((rows / 2), (cols - info.length()) / 2, "%s", info.c_str());
 }
@@ -142,14 +148,20 @@ int main(){
 	int ch; 
 	while ((ch = getch()) != 'q') {
 		switch (ch) {
-			case 'a':
-				currentTab = ABOUT;
+			case 'a': currentTab = ABOUT; break;
+			case 'p': currentTab = PROJECTS; break;
+			case 'c': currentTab = CONTACT; break;
+			case KEY_UP:
+			case 'k':
+				if (currentTab == CONTACT && index > 0 ) {
+					index--;
+				}
 				break;
-			case 'p':
-				currentTab = PROJECTS;
-				break;
-			case 'c':
-				currentTab = CONTACT;
+			case KEY_DOWN:
+			case 'j':
+				if (currentTab == CONTACT && index < 3) {
+					index++;
+				}
 				break;
 		}
 		create_webpage(currentTab);
