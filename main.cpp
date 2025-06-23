@@ -360,8 +360,8 @@ int main(){
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
 	//animation for name title
-	namePrint();	
-	usleep(800000);
+	//namePrint();	
+	//usleep(800000);
 	
 	// get user inputs from keyboard
     create_webpage(currentTab);
