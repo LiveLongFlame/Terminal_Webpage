@@ -263,9 +263,9 @@ void printProjectInfo(int rows, int cols){
 			mvprintw(readme_start_row + count, readme_start_col, "%.*s", readme_width, line.c_str());
 			count++;
 		}
-
+		string link = "Link: " + projects[index_project].repo_url;
 		attron(COLOR_PAIR(2) | A_REVERSE);
-		mvprintw(readme_start_row + count + 1, readme_start_col, "[Enter] Read More...");
+		mvprintw(readme_start_row + count + 1, readme_start_col, "%.*s", readme_width, link.c_str());
 		attroff(COLOR_PAIR(2) | A_REVERSE);
 	} else {
 
@@ -360,8 +360,8 @@ int main(){
 	init_pair(2, COLOR_CYAN, -1);    // Projects = Light Blue
 	init_pair(3, COLOR_YELLOW, -1);  // Contact = Orange-ish
 	//animation for name title
-	//namePrint();	
-	//usleep(800000);
+	namePrint();	
+	usleep(800000);
 	
 	// get user inputs from keyboard
     create_webpage(currentTab);
