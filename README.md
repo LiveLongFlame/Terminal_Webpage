@@ -1,3 +1,4 @@
+![Image](https://github.com/user-attachments/assets/ffa64ea1-a507-4786-b7e4-cb9fe31bed95)
 # Terminal_Webpage
 Welcome to my personal webpage!!!!!!!. 
 
